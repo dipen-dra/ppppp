@@ -1,0 +1,137 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
+const Service = require('./models/Service');
+const Workshop = require('./models/Workshop');
+const User = require('./models/User');
+const bcrypt = require('bcrypt');
+
+const services = [
+  {
+    name: "Full Engine Servicing",
+    description: "Complete diagnostics, carburetor tune-up, valve adjustment, spark plug cleaning, air filter replacement, and fresh high-grade synthetic engine oil change for ultimate performance.",
+    price: 3500,
+    duration: "4 Hours",
+    image: "uploads/engine_service.png",
+    rating: 4.8,
+    numReviews: 12,
+    reviews: []
+  },
+  {
+    name: "Brake System Overhaul",
+    description: "Complete front & rear caliper cleaning, high-friction brake pad replacement, hydraulic fluid flush, and level top-up to ensure responsive stopping power and street safety.",
+    price: 1500,
+    duration: "2 Hours",
+    image: "uploads/brake_service.png",
+    rating: 4.6,
+    numReviews: 8,
+    reviews: []
+  },
+  {
+    name: "Chain & Sprocket Care",
+    description: "Industrial grade chain degreasing, deep scrubbing, link inspection, precision alignment, tension adjustment, and advanced dry-wax lubrication spray to prevent wear.",
+    price: 1200,
+    duration: "1 Hour",
+    image: "uploads/chain_service.png",
+    rating: 4.7,
+    numReviews: 15,
+    reviews: []
+  },
+  {
+    name: "Premium Wash & Detail",
+    description: "Active snow foam pre-wash, high-pressure grime removal, chain washing, engine bay degreasing, hand dry with microfiber towel, and full body hydrophobic wax polish.",
+    price: 800,
+    duration: "1.5 Hours",
+    image: "uploads/wash_service.png",
+    rating: 4.9,
+    numReviews: 24,
+    reviews: []
+  }
+];
+
+const defaultWorkshop = {
+  ownerName: "Dipendra MotoFix",
+  workshopName: "MotoFix Premium Garage & Workshop",
+  email: "admin@motofix.com",
+  phone: "+977-9876543210",
+  address: "Gongabu, Ring Road, Kathmandu, Nepal",
+  offerPickupDropoff: true,
+  pickupDropoffChargePerKm: 50
+};
+
+const seedDB = async () => {
+  try {
+    const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/motofixdb";
+    console.log("Connecting to Database at:", mongoURI);
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log("Connected to MongoDB!");
+
+    // Clear existing services
+    await Service.deleteMany({});
+    console.log("Existing services cleared!");
+
+    // Seed new services
+    await Service.insertMany(services);
+    console.log("Successfully seeded mock services!");
+
+    // Clear existing workshops
+    await Workshop.deleteMany({});
+    console.log("Existing workshops cleared!");
+
+    // Seed new workshop profile
+    await Workshop.create(defaultWorkshop);
+    console.log("Successfully seeded mock workshop profile!");
+
+    // Clear existing users
+    await User.deleteMany({});
+    console.log("Existing users cleared!");
+
+    // Hash passwords
+    const hashedPassword = await bcrypt.hash("password123", 10);
+
+    const users = [
+      {
+        fullName: "Workshop Manager (Admin)",
+        email: "admin@motofix.com",
+        password: hashedPassword,
+        role: "admin",
+        phone: "+977-9876543210",
+        address: "Gongabu, Kathmandu, Nepal",
+        loyaltyPoints: 0
+      },
+      {
+        fullName: "System Superadmin (Superadmin)",
+        email: "superadmin@motofix.com",
+        password: hashedPassword,
+        role: "superadmin",
+        phone: "+977-9811223344",
+        address: "Balaju, Kathmandu, Nepal",
+        loyaltyPoints: 0
+      },
+      {
+        fullName: "Dipendra Rider",
+        email: "user@motofix.com",
+        password: hashedPassword,
+        role: "normal",
+        phone: "+977-9801234567",
+        address: "Kathmandu, Nepal",
+        loyaltyPoints: 120
+      }
+    ];
+
+    // Seed users
+    await User.insertMany(users);
+    console.log("Successfully seeded mock users (Admin & Rider)!");
+
+    mongoose.connection.close();
+    console.log("Database connection closed cleanly.");
+    process.exit(0);
+  } catch (error) {
+    console.error("Error during seeding process:", error);
+    process.exit(1);
+  }
+};
+
+seedDB();
