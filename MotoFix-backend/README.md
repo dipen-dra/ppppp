@@ -1319,7 +1319,7 @@ node seeder.js
 ```
 
 This creates:
-- Admin account: `dipendrajr999@gmail.com` / `admin123`
+- Admin account: `rehanpradhan34@gmail.com` / `admin123`
 - Sample services (Engine Tune-Up, Oil Change, Tire Repair, etc.)
 - Default workshop profile
 

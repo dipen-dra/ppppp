@@ -96,17 +96,25 @@
 - **Profile Management** — Edit name, phone, address, upload profile picture
 
 ### 🛠️ Admin Features
-- **Analytics Dashboard** — Total revenue, bookings, new users, monthly revenue charts (Recharts)
+- **Analytics Dashboard** — Total revenue, bookings, monthly revenue charts (Recharts)
 - **Booking Management** — View, update status, cancel bookings; admin archive support
-- **User Management** — List, promote/demote, ban/delete users with role assignment
 - **Service Management** — Full CRUD for services (name, description, price, image, duration)
 - **Workshop Profile** — Manage workshop info, pickup/dropoff toggle, per-km pricing
 - **Real-time Chat** — Respond to customer queries via Socket.IO
 - **Audit Logs** — Winston daily-rotating logs (access, audit, error categories)
 
+### 👑 Superadmin Features
+- **Identity & Access Control** — Isolated dashboard to view users list, edit profile details, assign roles (`user`, `admin`, `superadmin`), and safely perform user deletions with MongoDB cascade cleanup.
+- **Audit Log Inspector** — Centralized log querying center isolating event actions, status filters, dynamic pagination, and nested JSON payload viewers.
+- **Security KPIs Overview** — Real-time analytics tracking failed logins, account locks, and system performance indicators.
+
 ### 🔒 Security Features
 - **Multi-Factor Authentication (MFA)** — Supports Google Authenticator/TOTP and Email OTP two-step verification.
 - **Brute-force Account Lockout** — Accounts are locked for 15 minutes after 5 consecutive failed login attempts to prevent brute-force attacks.
+- **Stateless CAPTCHA (Bot Protection)** — Cryptographically signed stateless SVG CAPTCHA generator on registration to mitigate automated bots.
+- **Superadmin Panel & Role Isolation** — Created a dedicated `superadmin` role and isolated user management, audit trail analysis, and database cascade deletions from standard admin staff.
+- **2FA Brute-Force Lockout** — Prevents guessing attacks on email OTP and Google Authenticator/TOTP endpoints by tracking attempts and locking users out after 5 failures.
+- **Enhanced Input Sanitization** — Global recursive XSS middleware sanitizes nested objects, rewrites dynamic script tags/event listeners, and bypasses sensitive fields to prevent raw credential distortions.
 - **Stateless JWT with Revocation Blacklist** — Token expiry reduced from 100 days to 7 days, added custom `jti` claim, and implemented memory-efficient token blacklisting with TTL pruning on logout.
 - **Upgraded Cryptography** — Upgraded password hashing work factor from 10 to 12 bcrypt salt rounds.
 - **Server-side Price & Cost Integrity** — Server-side calculation of booking costs and distance-based fees using the Haversine formula; atomic Mongoose operators (`findOneAndUpdate`) mitigate race conditions during loyalty discount redemption.
@@ -1372,7 +1380,7 @@ node seeder.js
 ```
 
 This creates:
-- Admin account: `dipendrajr999@gmail.com` / `admin123`
+- Admin account: `rehanpradhan34@gmail.com` / `admin123`
 - Sample services (Engine Tune-Up, Oil Change, Tire Repair, etc.)
 - Default workshop profile
 
